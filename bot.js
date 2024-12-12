@@ -41,10 +41,8 @@ const remindedContests = new Set();
 // Helper function to fetch the next contests from CList API
 async function getNextContest() {
   try {
-    var currentTime = new Date().toISOString().split('.')[0]; // "YYYY-MM-DDTHH:MM:SS"
+    const currentTime = new Date().toISOString().split('.')[0]; // "YYYY-MM-DDTHH:MM:SS"
     console.log(currentTime);
-    const currentTimeMinusOneHour = moment().subtract(1, 'hour').toISOString();
-    
 
     const url = `https://clist.by/api/v4/contest/?start__gt=${currentTime}&order_by=start`;
 
@@ -52,10 +50,30 @@ async function getNextContest() {
       Authorization: `${API_KEY}`,
     };
 
+    // Mapping of resource IDs to platforms
+    const id_to_platform = {
+      2: 'Codechef',
+      1: 'Codeforces',
+      93: 'Atcoder',
+      102: 'Leetcode',
+      35: 'Google',
+      73: 'Hackerearth',
+      123: 'Codedrills',
+      12: 'Topcoder',
+      117: 'BinarySearch',
+      126: 'geeksforgeeks',
+    };
+
+    // Fetch contests from the API
     const response = await axios.get(url, { headers });
     const contests = response.data.objects;
 
-    return contests;
+    // Filter contests based on resource_id being in id_to_platform keys
+    const filteredContests = contests.filter(contest =>
+      Object.keys(id_to_platform).includes(String(contest.resource_id))
+    );
+
+    return filteredContests;
   } catch (error) {
     console.error('Error fetching contests:', error.message);
     return [];
