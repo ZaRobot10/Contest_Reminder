@@ -280,6 +280,13 @@ app.get('/', (req, res) => {
   res.send('Hello, this is your bot server!');
 });
 
+// Uptime Route for UptimeRobot
+app.get('/uptime', (req, res) => {
+  console.log('okay');
+  res.status(200).send('Service is up and running');
+});
+
+
 // Start the web server
 app.listen(PORT, () => {
   console.log(`Web server is running on port ${PORT}`);
